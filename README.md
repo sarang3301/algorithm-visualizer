@@ -1,65 +1,56 @@
 # Algorithm Visualizer
 
-Interactive visualizer for sorting algorithms and grid-based pathfinding
-(BFS/DFS), built with React and Vite. Animates each step of the algorithm
-in real time with adjustable speed.
+Sorting algorithms and grid pathfinding, animated step-by-step. Built to make abstract algorithm logic (comparisons, swaps, visited nodes) visible frame-by-frame instead of traced through pseudocode.
+
+![Algorithm Visualizer Screenshot](./screenshots/sorting-demo.png)
 
 ## Features
 
-- **Sorting:** Bubble Sort, Merge Sort, Quick Sort, Heap Sort — animated
-  bar chart showing comparisons, swaps, and sorted-position tracking.
-- **Pathfinding:** BFS and DFS on a draggable grid — draw walls, move
-  start/end points (extendable), watch the search frontier expand and the
-  final path highlight.
-- Adjustable animation speed for both views.
-- See [`DESIGN_NOTES.md`](./DESIGN_NOTES.md) for the engineering trade-offs
-  behind each algorithm choice.
+- **Sorting Visualizer** — Bubble Sort, Merge Sort, Quick Sort, Heap Sort with animated bars showing live comparisons and swaps
+- **Pathfinding Visualizer** — BFS and DFS traversal on a draggable-wall grid, with color-coded visited nodes and final path
+- Adjustable animation speed
+- Randomized array/grid generation ("New Array" button)
 
-## Tech stack
+## Tech Stack
 
-React 18, Vite — no backend, fully client-side.
+- **React** (function components + hooks)
+- **Vite** — dev server and build tool
+- **Plain CSS** — no UI framework
+- **Generator functions** (`function*` / `yield`) — decouple algorithm logic from animation timing; the algorithm code has no awareness of `setTimeout` or animation speed at all
 
-## Getting started
+## Getting Started
 
-```bash
+\`\`\`bash
+git clone https://github.com/sarang3301/algorithm-visualizer.git
+cd algorithm-visualizer/algo-visualizer
 npm install
 npm run dev
-```
+\`\`\`
 
-Then open the printed local URL (typically `http://localhost:5173`).
+Open `http://localhost:5173` in your browser.
 
-To build for production:
+## Project Structure
 
-```bash
-npm run build
-npm run preview
-```
+\`\`\`
+algo-visualizer/
+├── src/
+│   ├── algorithms/
+│   │   ├── sortingAlgorithms.js       # generator functions for each sort
+│   │   └── pathfindingAlgorithms.js   # generator functions for BFS/DFS
+│   ├── components/
+│   │   ├── SortingVisualizer.jsx
+│   │   ├── PathfindingVisualizer.jsx
+│   │   └── useSortAnimation.js        # animation loop, consumes generator steps
+│   ├── App.jsx
+│   └── main.jsx
+├── DESIGN_NOTES.md                    # trade-off writeup (Quick vs Merge, BFS vs DFS)
+└── screenshots/
+\`\`\`
 
-## Deploying
+## Design Notes
 
-This is a static Vite app — deploys for free on Vercel, Netlify, or GitHub
-Pages with zero configuration beyond pointing the platform at this repo and
-running `npm run build`.
+See [`DESIGN_NOTES.md`](./DESIGN_NOTES.md) for a breakdown of algorithmic trade-offs demonstrated in this project (e.g. Quick Sort's worst-case behavior on sorted input, BFS vs DFS guarantees).
 
-## Project structure
+## Deployment
 
-```
-src/
-├── algorithms/
-│   ├── sortingAlgorithms.js       # generator functions: bubble/merge/quick/heap sort
-│   └── pathfindingAlgorithms.js   # generator functions: BFS/DFS
-├── components/
-│   ├── SortingVisualizer.jsx
-│   ├── PathfindingVisualizer.jsx
-│   └── useSortAnimation.js        # animation-timing hook, decoupled from algorithm logic
-├── App.jsx
-└── main.jsx
-```
-
-## Why generators?
-
-Each algorithm is a generator function that yields a snapshot of state after
-every meaningful step. The animation layer (`setTimeout`-based) is the only
-part of the codebase that knows about timing — the algorithms themselves are
-pure and would work identically if driven by a test runner instead of a UI.
-See `DESIGN_NOTES.md` for more on this and other trade-offs.
+Static site, no backend — deployable to Vercel, Netlify, or GitHub Pages with zero config.
